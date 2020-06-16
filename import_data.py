@@ -8,8 +8,9 @@ Created on Fri Jun 12 21:23:58 2020
 import pandas as pd
 import numpy as np
 from sklearn.metrics import confusion_matrix
+from sklearn.model_selection import train_test_split, LeaveOneOut
 
-def get():
+def get(tipo,random):
     
     df = pd.read_csv("my_features_and_labels.csv")
     
@@ -29,8 +30,16 @@ def get():
     for i in range(18):
         
         data[:,i] = d[i]
+        
+    if(tipo == "cross"):
+        
+        X_train, X_test, y_train, y_test = train_test_split(data, target, random_state=random ,test_size = 0.2)
+        return X_train, X_test, y_train, y_test
     
-    return data,target
+    if(tipo == "data"):
+        return data, target
+    
+    
 
 def coeff(X_test , y_test, model):
     
@@ -52,5 +61,3 @@ def coeff(X_test , y_test, model):
     
     return sens,esp
     
-
-

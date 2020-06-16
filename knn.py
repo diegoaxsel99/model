@@ -6,23 +6,24 @@ Created on Fri Jun 12 21:43:19 2020
 """
 
 from import_data import get, coeff
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split,LeaveOneOut,KFold
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import confusion_matrix
 import matplotlib.pyplot as plt
 import os
 import numpy as np
 
+#%% mostrar el rendimiento del sistema 
+
 if not os.path.exists('resultados/knn'):
     os.makedirs('resultados/knn')
 
 for i in range(3):
 
-    data,target = get()
-    random = i
-    X_train, X_test, y_train, y_test = train_test_split(data, target, random_state=random ,test_size = 0.2)
+    random = i 
+    X_train, X_test, y_train, y_test = get("cross",random)
     
-    k_range = range(1,31)
+    k_range = range(1,13,2)
     acc = []
     print(i)
     sens = []
@@ -73,3 +74,69 @@ for i in range(3):
 
 # sens = tp /(tp + fn)
 # esp =  tn /(tn + fp)
+
+#%% loo
+loo = LeaveOneOut()
+
+data,target = get("data",0)
+knn = KNeighborsClassifier(n_neighbors = 3)
+acc = []
+i = 0
+
+total = loo.get_n_splits(data)
+for train_i,test_i in loo.split(data):
+    
+    print(str((i/total) * 100)+'%')
+    i = i + 1
+    X_train,X_test = data[train_i],data[test_i]
+    y_train,y_test = target[train_i],target[test_i]
+            
+    knn.fit(X_train,y_train)
+    acc.append(knn.score(X_test, y_test))
+    
+plt.figure()
+plt.title("resultado generados con knn y leave one out " + str(random))
+plt.xlabel("# iteraciones")
+plt.ylabel('accurency')
+plt.plot(acc)
+plt.show()
+
+
+plt.savefig('resultados/knn/knn_resul loo'+ str(random) +' .png')
+plt.close('all') 
+
+#%% kfold
+knn = KNeighborsClassifier(n_neighbors = 3)
+por = []
+splits = range(2,16)
+
+for i in splits:
+    
+    print(i)
+    kf = KFold(n_splits = i)
+    acc = []
+    
+    for train_i, test_i in kf.split(data):
+        
+        X_train, X_test = data[train_i], data[test_i]
+        y_train, y_test = target[train_i], target[test_i]
+        
+        knn.fit(X_train, y_train)
+        
+        acc.append(knn.score(X_test, y_test))
+    
+    por.append(sum(acc) / len(acc))
+
+plt.figure()
+plt.title("resultado generados con knn y kfold " + str(random))
+plt.xlabel("# splits")
+plt.ylabel('accurency')
+plt.plot(splits , por)
+plt.show()
+
+plt.savefig('resultados/knn/knn_kfold'+ str(random) +' .png')
+plt.close('all') 
+    
+
+
+
