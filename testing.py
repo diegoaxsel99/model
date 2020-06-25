@@ -40,23 +40,17 @@ print(knn.score(X_test,y_test))
 # for i in range(len(columns) - 1):
     
 #     data[:,i] = dn.get(columns[i]).values
+knn = KNeighborsClassifier(n_neighbors = 5)
 
-df = pd.read_csv('matriz/pca_features.csv')
-data = df.iloc[:,:12].values
-target = df.get('target').values
+X_train, X_test, y_train, y_test  = get('cross', 2,pca = True)
 
-X_train, X_test, y_train, y_test = train_test_split(data, target, random_state=2 ,test_size = 0.2)
-
-knn = KNeighborsClassifier(n_neighbors = 5).fit(X_train,y_train)
+knn.fit(X_train,y_train)
 
 print(knn.score(X_test,y_test))
 
+X_train, X_test, y_train, y_test  = get('cross', 2,pca = False)
 
-data , target = get('data', 2)
-
-X_train, X_test, y_train, y_test = train_test_split(data, target, random_state=2 ,test_size = 0.2)
-
-knn = KNeighborsClassifier(n_neighbors = 5).fit(X_train,y_train)
+knn.fit(X_train,y_train)
 
 print(knn.score(X_test,y_test))
 

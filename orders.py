@@ -62,7 +62,7 @@ fig.savefig('info/orders/tratamiento_de_la_señal.png')
 
 #%% generar la matriz de correlacion
 
-data = get('Dataframe' , random = 2)
+data = get('Dataframe' , random = 2, pca = False)
 plot_corr(data)
 
 plt.savefig('info/orders/matriz_correlacion.png')
@@ -70,7 +70,7 @@ plt.close('all')
 
 #%% generar grafica de dispersion
 
-X_train, X_test, y_train, y_test = get('cross', random = 2)
+X_train, X_test, y_train, y_test = get('cross', random = 2, pca = False)
 
 iris_dataframe = pd.DataFrame(X_train)
 
@@ -87,14 +87,12 @@ from sklearn.preprocessing import MinMaxScaler
 
 pca = PCA(n_components = 0.99)
 
-data,target = get('data',random = 2)
+data,target = get('data',random = 2 , pca = False)
 data_rescaled = MinMaxScaler().fit_transform(data)
 
 transformaciones ={}
 
-transformaciones['mismo numero'] = pca.fit_transform(data)
-
-df =pd.DataFrame(transformaciones['mismo numero'])
+df =pd.DataFrame(pca.fit_transform(data))
 
 plot_corr(df)
 
@@ -115,7 +113,7 @@ for i in range(len(target)):
     
     ntarget.append(arritmias[target[i]])
 
-dt = pd.DataFrame(ntarget, columns = ['target'])
+dt = pd.DataFrame(ntarget, columns = ['label'])
 dfinal = pd.concat([df,dt],axis = 1)
 
 dfinal.to_csv('matriz/pca_features.csv', index =False)

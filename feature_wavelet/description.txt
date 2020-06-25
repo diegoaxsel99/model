@@ -1,0 +1,10 @@
+normal beat: latido normal
+LBBBB: left bundle brach block beat
+RBBBB: rifth bundle branch block beat
+AAPB: aberrated atrial premature beat
+PVC: premature ventricule contration
+APC: atrial premature contraction
+NEB: nobal escape beat
+PB: paced beat
+UB: unclassifiable beat
+FPNB: fusion of pace and normal beat

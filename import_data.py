@@ -18,20 +18,22 @@ from sklearn.decomposition import PCA
 funciones para extraer la informacion de los archivos creados donde se
 encuentran las caracteristicas
 """
-def get(tipo,random):
+def get(tipo,random,pca):
     
-    dn = pd.read_csv('matriz/all_features.csv')
+    if(pca):
+        path = 'matriz/pca_features.csv'
+    else:
+        path = 'matriz/all_features.csv'
+    
+    dn = pd.read_csv(path)
+    
+    
     [f, c] = dn.shape
     c = c - 1
     
-    data  = np.zeros((f,c))
     target = dn.get('label').values
     columns = dn.columns
-
-    for i in range(len(columns) - 1):
-        
-        data[:,i] = dn.get(columns[i]).values
-     
+    data = dn.iloc[:,:c].values   
     
     X_train, X_test, y_train, y_test = train_test_split(data, target, random_state=random ,test_size = 0.2)
     
@@ -49,6 +51,7 @@ def get(tipo,random):
         X_test = sc_X.transform(X_test)
         
         return X_train, X_test, y_train, y_test
+    
     if(tipo == 'Dataframe'):
          dnn = dn.iloc[:, :c]
          return dnn
